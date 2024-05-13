@@ -35,7 +35,7 @@ def fn_get_db_name():
 def fn_get_sql_script():
     file_path = os.path.realpath(__file__)
     work_dir = os.path.dirname(file_path)
-    sql_init_script = f'{work_dir}/sql-scripts/init_classement_F1.sql'
+    sql_init_script = f'{work_dir}/sql_script/init_classement_F1.sql'
     return sql_init_script
 
 def fn_init_db(db_name, sql_init_script):
@@ -71,9 +71,9 @@ def fn_init_db(db_name, sql_init_script):
             print("The SQLite connection is closed")
 
 def fn_input_train_code():
-    q_status = "Entrer un code de 6 caractères pour le train (Ex : AB1234) : "
-    e_status = "\nErreur : Codes invalides \nEntrer un code de 6 caractères pour le train (Ex : AB1234) : \n"
-    train_code = fn_question_train_code(q_status, e_status)
+    q_status = ""
+    e_status = ""
+    nom_team = fn_question_train_code(q_status, e_status)
     return train_code
     
 def fn_set_train_code(db_name, train_code):
@@ -101,10 +101,11 @@ def fn_set_train_code(db_name, train_code):
             print("The SQLite connection is closed")
 
 def fn_init_set_train_code_menu():
-    q_choix_1 = "[1] Ajouter un train"
+    q_choix_1 = "[1] Ajouter une team"
     q_choix_2 = "[2] Quitter"
     list_menu = [q_choix_1, q_choix_2]
     return list_menu
+
 
 def fn_set_train_code_menu(list_menu):
     print(f'\n----Menu - Projet Classement F1----')
