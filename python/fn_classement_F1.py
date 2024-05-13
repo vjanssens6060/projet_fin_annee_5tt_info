@@ -35,7 +35,7 @@ def fn_get_db_name():
 def fn_get_sql_script():
     file_path = os.path.realpath(__file__)
     work_dir = os.path.dirname(file_path)
-    sql_init_script = f'{work_dir}/sql-scripts/init-horaire-train.sql'
+    sql_init_script = f'{work_dir}/sql-scripts/init_classement_F1.sql'
     return sql_init_script
 
 def fn_init_db(db_name, sql_init_script):
@@ -107,7 +107,7 @@ def fn_init_set_train_code_menu():
     return list_menu
 
 def fn_set_train_code_menu(list_menu):
-    print(f'\n----Menu - Projet Horaire train----')
+    print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
     q_status = "Entrer votre choix (1-2) : "
@@ -199,7 +199,7 @@ def fn_init_update_train_code_menu():
     return list_menu
 
 def fn_update_train_code_menu(list_menu):
-    print(f'\n----Menu - Projet Horaire train----')
+    print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
     q_status = "Entrer votre choix (1-2) : "
@@ -261,7 +261,7 @@ def fn_init_delete_train_code_menu():
     return list_menu
 
 def fn_delete_train_code_menu(list_menu):
-    print(f'\n----Supprimer - Projet Horaire train----')
+    print(f'\n----Supprimer - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
     q_status = "Entrer votre choix : "

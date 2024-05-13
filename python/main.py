@@ -27,7 +27,7 @@ def fn_init_menu():
 
 
 def fn_menu(list_menu):
-    print(f'\n----Menu - Projet Horaire train----')
+    print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
     q_status = "Entrer votre choix (1-6) : "
