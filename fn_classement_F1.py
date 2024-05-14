@@ -90,12 +90,8 @@ def fn_set_team_data(db_name, team_data):
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()                                
             try:
-                print(f"Commande SQL exécutée : INSERT INTO TEAM (nom) VALUES ('{team_data[0]}');")
-                cursor.execute(f"INSERT INTO TEAM (nom) VALUES ('{team_data[0]}');")
-                print(f"Commande SQL exécutée : INSERT INTO TEAM (directeur) VALUES ('{team_data[0]}');")
-                cursor.execute(f"INSERT INTO TEAM (directeur) VALUES ('{team_data[0]}');")
-                print(f"Commande SQL exécutée : INSERT INTO TEAM (position_classement_constructeur) VALUES ('{team_data[0]}');")
-                cursor.execute(f"INSERT INTO TEAM (position_classement_constructeur) VALUES ('{team_data[0]}');")
+                print(f"Commande SQL exécutée : INSERT INTO TEAM (nom, directeur, position_classement_constructeur ) VALUES ('{team_data[0]}', '{team_data[1]}', '{team_data[2]}');")
+                cursor.execute(f"INSERT INTO TEAM (nom, directeur, position_classement_constructeur ) VALUES ('{team_data[0]}', '{team_data[1]}', '{team_data[2]}');")
                 print("SQLite command executed successfully")
             except sqlite3.Error as error:
                 print(f"Error while executing SQLite script: {error}")
@@ -128,7 +124,7 @@ def fn_set_team_code_menu(list_menu):
         case 1:
             team_data = fn_input_team_code()
             db_name = fn_get_db_name()
-            fn_set_train_code(db_name, team_data)
+            fn_set_team_data(db_name, team_data)
             return True
         case 2:
             print(f'Fermeture de l\'application')
@@ -153,7 +149,7 @@ def fn_read_db(db_name):
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()                                
             try:
-                cursor.execute(f"SELECT * FROM TRAIN;")
+                cursor.execute(f"SELECT * FROM TEAM;")
                 data = cursor.fetchall()
                 print("SQLite script executed successfully")
                 print(f'\nExecution du SELECT :')
@@ -180,15 +176,15 @@ def fn_question_id(question, erreur):
         train_id = input(question)
     return train_id
 
-def fn_update_train_code(train_code, train_id, db_name):
+def fn_update_team_code(team_data, team_id, db_name):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()
             try:
-                print(f"UPDATE TRAIN SET Code='{train_code}' WHERE train_id='{train_id}';")
-                cursor.execute(f"UPDATE TRAIN SET Code='{train_code}' WHERE train_id='{train_id}';")
+                print(f"UPDATE TEAM SET nom='{team_data[0]}', directeur='{team_data[1]}', position_classement_constructeur='{team_data[2]}' WHERE team_id='{team_id}';")
+                cursor.execute(f"UPDATE TEAM SET nom='{team_data[0]}', directeur='{team_data[1]}', position_classement_constructeur='{team_data[2]}' WHERE team_id='{team_id}';")
                 print("SQLite command executed successfully")
             except sqlite3.Error as error:
                 print(f"Error while executing SQLite script: {error}")
@@ -203,13 +199,13 @@ def fn_update_train_code(train_code, train_id, db_name):
             sqliteConnection.close()
             print("The SQLite connection is closed")
     
-def fn_init_update_train_code_menu():
-    q_choix_1 = "[1] Modifier un train"
+def fn_init_update_team_code_menu():
+    q_choix_1 = "[1] Modifier une team"
     q_choix_2 = "[2] Quitter"
     list_menu = [q_choix_1, q_choix_2]
     return list_menu
 
-def fn_update_train_code_menu(list_menu):
+def fn_update_team_code_menu(list_menu):
     print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
@@ -224,7 +220,7 @@ def fn_update_train_code_menu(list_menu):
             e_id_status = "\nErreur : Caractères invalides\n"
             train_id = fn_question_id(q_id_status, e_id_status)
             train_code = fn_input_team_code()
-            fn_update_train_code(train_code, train_id, db_name)
+            fn_update_team_code(train_code, train_id, db_name)
             return True
         case 2:
             print(f'Fermeture de l\'application')
@@ -235,22 +231,22 @@ def fn_update_train_code_menu(list_menu):
         
 def fn_update_db():
     try:
-        list_menu = fn_init_update_train_code_menu()
-        update_db_out = fn_update_train_code_menu(list_menu)            
+        list_menu = fn_init_update_team_code_menu()
+        update_db_out = fn_update_team_code_menu(list_menu)            
     except Exception as error:
         print(f"{error}")
     finally:
         return update_db_out
 
-def fn_delete_train_code (db_name, train_id):
+def fn_delete_team_code (db_name, team_id):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()
             try:
-                print(f"DELETE FROM TRAIN WHERE train_id = {train_id};")
-                cursor.execute(f"DELETE FROM TRAIN WHERE train_id = {train_id};")
+                print(f"DELETE FROM TEAM WHERE team_id = {team_id};")
+                cursor.execute(f"DELETE FROM TEAM WHERE team_id = {team_id};")
                 print("SQLite command executed successfully")
             except sqlite3.Error as error:
                 print(f"Error while executing SQLite command: {error}")
@@ -265,13 +261,13 @@ def fn_delete_train_code (db_name, train_id):
             sqliteConnection.close()
             print("The SQLite connection is closed")
 
-def fn_init_delete_train_code_menu():
-    q_choix_1 = "[1] Supprimer un train"
+def fn_init_delete_team_code_menu():
+    q_choix_1 = "[1] Supprimer une team"
     q_choix_2 = "[2] Quitter"
     list_menu = [q_choix_1, q_choix_2]
     return list_menu
 
-def fn_delete_train_code_menu(list_menu):
+def fn_delete_team_code_menu(list_menu):
     print(f'\n----Supprimer - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
@@ -284,8 +280,8 @@ def fn_delete_train_code_menu(list_menu):
             fn_read_db(db_name)
             q_id_status = "Entrer votre choix : "
             e_id_status = "\nErreur : Caractères invalides\n"
-            train_id = fn_question_id(q_id_status, e_id_status)
-            fn_delete_train_code(db_name, train_id)
+            team_id = fn_question_id(q_id_status, e_id_status)
+            fn_delete_team_code(db_name, team_id)
             return True
         case 2:
             print(f'Fermeture de l\'application')
@@ -296,8 +292,8 @@ def fn_delete_train_code_menu(list_menu):
 
 def fn_delete_db():
     try:
-        list_menu = fn_init_delete_train_code_menu()
-        delete_db_out = fn_delete_train_code_menu(list_menu)            
+        list_menu = fn_init_delete_team_code_menu()
+        delete_db_out = fn_delete_team_code_menu(list_menu)            
     except Exception as error:
         print(f"{error}")
     finally:
