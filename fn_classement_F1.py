@@ -70,22 +70,32 @@ def fn_init_db(db_name, sql_init_script):
             sqliteConnection.close()
             print("The SQLite connection is closed")
 
-def fn_input_train_code():
-    q_status = ""
-    e_status = ""
-    nom_team = fn_question_train_code(q_status, e_status)
-    return train_code
+def fn_input_team_code():
+    q_team_nom = "Encoder le nom de la team"
+    e_team_nom = "Erreur le nom de la team n'est pas valide"
+    team_nom = fn_question_alpha(q_team_nom, e_team_nom)
+    q_directeur_nom = "Encoder le nom du directeur"
+    e_directeur_nom = "Erreur le nom du directeur n'est pas valide"
+    directeur_nom = fn_question_alpha(q_directeur_nom, e_directeur_nom)
+    q_position_classement_constructeur = "Entrer le position au classement constructeur de la team"
+    e_position_classement_constructeur = "Erreur la position au classement constructeur n'est pas valide"
+    position_classement_constructeur = fn_question_int(q_position_classement_constructeur, e_position_classement_constructeur)
+    team_list = [team_nom, directeur_nom, position_classement_constructeur]
+    return team_list
     
-def fn_set_train_code(db_name, train_code):
+def fn_set_team_data(db_name, team_data):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()                                
             try:
-                print(f"Commande SQL exécutée : INSERT INTO TRAIN (code) VALUES ('{train_code}');")
-                cursor.execute(f"INSERT INTO TRAIN (code) VALUES ('{train_code}');")
-                # print("SQLite script executed successfully")
+                print(f"Commande SQL exécutée : INSERT INTO TEAM (nom) VALUES ('{team_data[0]}');")
+                cursor.execute(f"INSERT INTO TEAM (nom) VALUES ('{team_data[0]}');")
+                print(f"Commande SQL exécutée : INSERT INTO TEAM (directeur) VALUES ('{team_data[0]}');")
+                cursor.execute(f"INSERT INTO TEAM (directeur) VALUES ('{team_data[0]}');")
+                print(f"Commande SQL exécutée : INSERT INTO TEAM (position_classement_constructeur) VALUES ('{team_data[0]}');")
+                cursor.execute(f"INSERT INTO TEAM (position_classement_constructeur) VALUES ('{team_data[0]}');")
                 print("SQLite command executed successfully")
             except sqlite3.Error as error:
                 print(f"Error while executing SQLite script: {error}")
@@ -100,14 +110,14 @@ def fn_set_train_code(db_name, train_code):
             sqliteConnection.close()
             print("The SQLite connection is closed")
 
-def fn_init_set_train_code_menu():
+def fn_init_set_team_code_menu():
     q_choix_1 = "[1] Ajouter une team"
     q_choix_2 = "[2] Quitter"
     list_menu = [q_choix_1, q_choix_2]
     return list_menu
 
 
-def fn_set_train_code_menu(list_menu):
+def fn_set_team_code_menu(list_menu):
     print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
@@ -116,9 +126,9 @@ def fn_set_train_code_menu(list_menu):
     status = int(fn_question_int(q_status, e_status))
     match status:
         case 1:
-            train_code = fn_input_train_code()
+            team_data = fn_input_team_code()
             db_name = fn_get_db_name()
-            fn_set_train_code(db_name, train_code)
+            fn_set_train_code(db_name, team_data)
             return True
         case 2:
             print(f'Fermeture de l\'application')
@@ -129,8 +139,8 @@ def fn_set_train_code_menu(list_menu):
     
 def fn_create_db():
     try:
-        list_menu = fn_init_set_train_code_menu()
-        create_db_out = fn_set_train_code_menu(list_menu)            
+        list_menu = fn_init_set_team_code_menu()
+        create_db_out = fn_set_team_code_menu(list_menu)            
     except Exception as error:
         print(f"{error}")
     finally:
@@ -213,7 +223,7 @@ def fn_update_train_code_menu(list_menu):
             q_id_status = "Entrer votre choix : "
             e_id_status = "\nErreur : Caractères invalides\n"
             train_id = fn_question_id(q_id_status, e_id_status)
-            train_code = fn_input_train_code()
+            train_code = fn_input_team_code()
             fn_update_train_code(train_code, train_id, db_name)
             return True
         case 2:

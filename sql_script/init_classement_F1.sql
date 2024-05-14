@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS driver
     fastest_lap DATETIME,
     victoire INTEGER,
     championnat_gagner INTEGER,
-    nationalite TEXT,
+    nationalite VARCHAR,
     date_de_naissance VARCHAR,
     team_id INT,
     FOREIGN KEY (team_id) REFERENCES team(id)
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS driver
 CREATE TABLE IF NOT EXISTS team
 (
     team_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-    voiture VARCHAR,
-    directeur TEXT,
+    nom VARCHAR,
+    directeur VARCHAR,
     position_classement_constructeur INTEGER
 );
 
