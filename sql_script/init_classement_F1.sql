@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS team
 CREATE TABLE IF NOT EXISTS car
 (
     car_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+    numero_voiture INTEGER, 
+    nom_voiture VARCHAR,
+    nbr_chassis_disponible INTEGER, 
     team_id INT,
     FOREIGN KEY (team_id) REFERENCES team(id)
 );
