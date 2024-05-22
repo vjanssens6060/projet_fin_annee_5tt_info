@@ -24,7 +24,7 @@ def fn_read_db(db_name, type):
             cursor = sqliteConnection.cursor()  
                                   
             try:
-                if type == "team":        
+                if 'team':        
                     cursor.execute(f"SELECT * FROM TEAM;")
                     data = cursor.fetchall()
                     print("SQLite script executed successfully")
@@ -32,7 +32,7 @@ def fn_read_db(db_name, type):
                     for line in data:
                         print(line)
                     return data
-                elif type == "car":
+                elif 'car':
                     cursor.execute(f"SELECT * FROM CAR;")
                     data = cursor.fetchall()
                     print("SQLite script executed successfully")
@@ -180,8 +180,9 @@ def fn_set_team_data(db_name, team_data):
 def fn_init_set_team_menu():
     q_choix_1 = "[1] Ajouter une team"
     q_choix_2 = "[2] Encoder une voiture"
-    q_choix_3 = "[3] Quitter"
-    list_menu = [q_choix_1, q_choix_2, q_choix_3]
+    q_choix_3 = "[3] Encoder un pilote"
+    q_choix_4 = "[4] Quitter"
+    list_menu = [q_choix_1, q_choix_2,q_choix_3, q_choix_4]
     return list_menu
 
 
@@ -189,7 +190,7 @@ def fn_set_team_menu(list_menu):
     print(f'\n----Menu - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
-    q_status = "Entrer votre choix (1-2) : "
+    q_status = "Entrer votre choix (1-4) : "
     e_status = "\nErreur : Caractères invalides\n"
     status = int(fn_question_int(q_status, e_status))
     match status:
@@ -202,7 +203,11 @@ def fn_set_team_menu(list_menu):
             car_data = fn_input_car()
             db_name = fn_get_db_name()
             fn_set_car_data(db_name, car_data)
-        case 3:
+        case 3 : 
+            driver_data = fn_input_driver()
+            db_name = fn_get_db_name()
+            fn_set_driver_data(db_name, driver_data)
+        case 4:
             print(f'Fermeture de l\'application')
             return False
         case _:
@@ -321,7 +326,7 @@ def fn_update_db():
     finally:
         return update_db_out
 
-def fn_delete_team (db_name, type, id):
+def fn_delete_team (db_name, type, id, team, car):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
@@ -379,7 +384,7 @@ def fn_init_delete_team_menu():
     list_menu = [q_choix_1, q_choix_2, q_choix_3]
     return list_menu
 
-def fn_delete_team_menu(list_menu):
+def fn_delete_team_menu(list_menu, team, car):
     print(f'\n----Supprimer - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
@@ -444,37 +449,65 @@ def fn_set_car_data(db_name, car_data):
 def fn_input_car():
     q_nom_voiture = "Encoder le nom de la voiture"
     nom_voiture = input(q_nom_voiture)
-    q_numero_voiture = "Encoder le numéro de la voiture"
-    e_numero_voiture = "Erreur le numéro de la voiture n'est pas valide"
+    q_numero_voiture = "Encoder le numéro de la voiture : "
+    e_numero_voiture = "Erreur le numéro de la voiture n'est pas valide "
     numero_voiture = fn_question_alpha(q_numero_voiture, e_numero_voiture)
-    q_id_voiture = "Encoder l'id de la team associée"
+    q_id_voiture = "Encoder l'id de la team associée : "
     e_id_voiture = "Erreur l'id de la team associée n'est pas valide"
     id_voiture = fn_question_id_team(q_id_voiture, e_id_voiture)
     car_list = [numero_voiture, nom_voiture, id_voiture]
     return car_list
 
+def fn_set_driver_data(db_name, driver_data):
+    sqliteConnection = None
+    try:            
+        with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
+            print(f"Connected to the database {db_name}")
+            cursor = sqliteConnection.cursor()                                
+            try:
+                print(f"Commande SQL exécutée : INSERT INTO CAR (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}');")
+                cursor.execute(f"INSERT INTO CAR (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance, team_id) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}', '{driver_data[8]}');")
+                print("SQLite command executed successfully")
+            except sqlite3.Error as error:
+                print(f"Error while executing SQLite script: {error}")
+            finally:
+                cursor.close()
+    except sqlite3.Error as error:
+        print(f"Error while connecting to SQLite: {error}")
+    except Exception as error:
+        print(f"{error}")
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("The SQLite connection is closed")
+
 def fn_input_driver():
-    q_numero = "Encoder numéro pilote"
+    q_numero = "Encoder numéro pilote : "
     e_numero = 'Erreur le numéro pilote est mauvais'
     numero = int(input(q_numero))
-    q_position_classement_pilote = "Encoder la position au classement pilote"
+    q_position_classement_pilote = "Encoder la position au classement pilote : "
     e_position_classement_pilote = "Erreur la position est mauvaise"
     position_classement_pilote = int(intput(q_position_classement_pilote))
-    q_podium = "Encoder le nombre de podium du pilote"
+    q_podium = "Encoder le nombre de podium du pilote : "
     e_podium = "Erreur le nombre de podium est mauvais"
     podium = int(input(q_podium))
-    q_fastest_lap = "Encoder le meilleur tour en course"
+    q_fastest_lap = "Encoder le meilleur tour en course : "
     e_fastest_lap = "Erreur le temps n'est pas valide"
     fastest_lap = input(q_fastest_lap)
-    q_victoire = "Encoder le nombre de victoire du pilote"
+    q_victoire = "Encoder le nombre de victoire du pilote : "
     e_victoire = "Erreur le nombre de victoire n'est pas valide"
     victoire = int(input(q_victoire))
-    q_championnat_gagner = "Encoder le nombre de championnat gagner du pilote"
+    q_championnat_gagner = "Encoder le nombre de championnat gagner du pilote : "
     e_championnat_gagner = "Erreur le nombre de championnat gagner n'est pas valide"
     championnat_gagner = int(intput(q_championnat_gagner))
-    q_nationalite = "Entrer la nationalite du pilote"
+    q_nationalite = "Entrer la nationalite du pilote : "
     e_nationalite = "Erreur dans la nationalité du pilote"
     nationalite = fn_question_alpha(q_nationalite, e_nationalite)
+    q_date_de_naissance = "Entrer la date de naissance du pilote : "
+    e_date_de_naissance = "Erreur la date de naissance du pilote n'est pas valide"
+    date_de_naissance = intput(q_date_de_naissance)
     id_voiture = fn_question_id_team(q_id_voiture, e_id_voiture)
-    car_list = [numero_voiture, nom_voiture, id_voiture]
+    car_list = [numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance]
     return car_list
+
+    
