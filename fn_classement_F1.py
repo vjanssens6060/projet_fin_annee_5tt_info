@@ -16,7 +16,7 @@ def fn_question_int(question, erreur):
         reponse = input(question)
     return reponse
 
-def fn_read_db(db_name, type):
+def fn_read_db(db_name, table_name):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
@@ -24,7 +24,7 @@ def fn_read_db(db_name, type):
             cursor = sqliteConnection.cursor()  
                                   
             try:
-                if 'team':        
+                if table_name == 'team':        
                     cursor.execute(f"SELECT * FROM TEAM;")
                     data = cursor.fetchall()
                     print("SQLite script executed successfully")
@@ -32,8 +32,16 @@ def fn_read_db(db_name, type):
                     for line in data:
                         print(line)
                     return data
-                elif 'car':
+                elif table_name == 'car':
                     cursor.execute(f"SELECT * FROM CAR;")
+                    data = cursor.fetchall()
+                    print("SQLite script executed successfully")
+                    print(f'\nExecution du SELECT :')
+                    for line in data:
+                        print(line)
+                    return data
+                elif table_name == 'driver':
+                    cursor.execute(f"SELECT * FROM DRIVER;")
                     data = cursor.fetchall()
                     print("SQLite script executed successfully")
                     print(f'\nExecution du SELECT :')
@@ -326,18 +334,18 @@ def fn_update_db():
     finally:
         return update_db_out
 
-def fn_delete_team (db_name, type, id, team, car):
+def fn_delete_team (db_name, table_name, id):
     sqliteConnection = None
     try:            
         with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()
             try:
-                if type == 'team':
+                if table_name == 'team':
                     print(f"DELETE FROM TEAM WHERE team_id = {id};")
                     cursor.execute(f"DELETE FROM TEAM WHERE team_id = {id};")
                     print("SQLite command executed successfully")
-                elif type == 'car':
+                elif table_name == 'car':
                     print(f"DELETE FROM CAR WHERE car_id = {id};")
                     cursor.execute(f"DELETE FROM CAR WHERE car_id = {id};")
                     print("SQLite command executed successfully")
@@ -384,7 +392,7 @@ def fn_init_delete_team_menu():
     list_menu = [q_choix_1, q_choix_2, q_choix_3]
     return list_menu
 
-def fn_delete_team_menu(list_menu, team, car):
+def fn_delete_team_menu(list_menu):
     print(f'\n----Supprimer - Projet Classement F1----')
     for item in list_menu:
         print(f'{item}')
@@ -393,20 +401,23 @@ def fn_delete_team_menu(list_menu, team, car):
     status = int(fn_question_int(q_status, e_status))
     match status:
         case 1:
+            table_name = 'team'
             db_name = fn_get_db_name()
-            fn_read_db(db_name, 'team')
+            fn_read_db(db_name, table_name)
             q_id_status = "Entrer votre choix : "
             e_id_status = "\nErreur : Caractères invalides\n"
             team_id = fn_question_id(q_id_status, e_id_status)
-            fn_delete_team(db_name, team_id)
+            fn_delete_team(db_name, table_name, team_id)
             return True
         case 2: 
+            table_name = 'car'
             db_name = fn_get_db_name()
-            fn_read_db(db_name, 'car')
+            fn_read_db(db_name, table_name)
             q_id_status = "Entrer votre choix : "
             e_id_status = "\nErreur : Caractères invalides\n"
-            team_id = fn_question_id(q_id_status, e_id_status)
-            fn_delete_car(db_name, team_id)
+            car_id = fn_question_id(q_id_status, e_id_status)
+            fn_delete_car(db_name,table_name, car_id)
+            return True
         case 3:
             print(f'Fermeture de l\'application')
             return False
@@ -420,6 +431,7 @@ def fn_delete_db():
         delete_db_out = fn_delete_team_menu(list_menu)            
     except Exception as error:
         print(f"{error}")
+        delete_db_out = False
     finally:
         return delete_db_out
 
