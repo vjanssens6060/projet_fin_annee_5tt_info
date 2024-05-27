@@ -221,6 +221,36 @@ def fn_set_team_menu(list_menu):
         case _:
             print(f'\nErreur : Choix non-valide\n')
             return True
+
+def fn_init_set_table_menu():
+    q_choix_1 = "[1] Afficher une team"
+    q_choix_2 = "[2] Afficher une voiture"
+    q_choix_3 = "[3] Afficher un pilote"
+    q_choix_4 = "[4] Quitter"
+    list_menu = [q_choix_1, q_choix_2,q_choix_3, q_choix_4]
+    return list_menu
+
+
+def fn_set_table_menu(list_menu):
+    print(f'\n----Menu - Afficher les Tables ----')
+    for item in list_menu:
+        print(f'{item}')
+    q_status = "Entrer votre choix (1-4) : "
+    e_status = "\nErreur : Caractères invalides\n"
+    status = int(fn_question_int(q_status, e_status))
+    match status:
+        case 1:
+            return 'team'
+        case 2:
+            return 'car'
+        case 3 : 
+            return 'driver'
+        case 4:
+            print(f'Fermeture de l\'application')
+            return False
+        case _:
+            print(f'\nErreur : Choix non-valide\n')
+            return True
     
 def fn_create_db():
     try:
@@ -477,8 +507,8 @@ def fn_set_driver_data(db_name, driver_data):
             print(f"Connected to the database {db_name}")
             cursor = sqliteConnection.cursor()                                
             try:
-                print(f"Commande SQL exécutée : INSERT INTO CAR (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}');")
-                cursor.execute(f"INSERT INTO CAR (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance, team_id) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}', '{driver_data[8]}');")
+                print(f"Commande SQL exécutée : INSERT INTO DRIVER (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}');")
+                cursor.execute(f"INSERT INTO DRIVER (numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance, team_id) VALUES ('{driver_data[0]}', '{driver_data[1]}', '{driver_data[2]}', '{driver_data[2]}', '{driver_data[3]}', '{driver_data[4]}', '{driver_data[5]}', '{driver_data[6]}', '{driver_data[7]}', '{driver_data[8]}');")
                 print("SQLite command executed successfully")
             except sqlite3.Error as error:
                 print(f"Error while executing SQLite script: {error}")

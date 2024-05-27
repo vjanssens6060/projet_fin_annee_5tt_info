@@ -46,7 +46,9 @@ def fn_menu(list_menu):
             return True
         case 3:
             db_name = fnht.fn_get_db_name()
-            fnht.fn_read_db(db_name)
+            list_menu = fnht.fn_init_set_table_menu()
+            table_name = fnht.fn_set_table_menu(list_menu)
+            fnht.fn_read_db(db_name, table_name)
             return True
         case 4:
             boucle = True
