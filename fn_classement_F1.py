@@ -1,7 +1,6 @@
 import sqlite3
 import os
 import re
-import mysql.connector
 
 def fn_question_alpha(question, erreur):
     reponse = input(question)
@@ -553,11 +552,12 @@ def fn_input_driver():
     car_list = [numero, position_classement_pilote, podium, fastest_lap, victoire, championnat_gagner, nationalite, date_de_naissance]
     return car_list
 
-def fn_dict_team(db_name):
-    cnx = mysql.connector.connect(database=db_name)
-    data = cnx.cursor(dictionary=True)
-    data.execute("SELECT * FROM TEAM")
-    print("Équipes :")
-    for row in data:
-        print(f"ID de l'équipe : {row['team_id']}, Nom de l'équipe : {row['nom']}, Directeur : {row['directeur']}, Position au classement constructeur : {row['position_classement_constructeur']}")
-    return data
+
+    def fn_dict_team(db_name):
+        conn = sqlite3.connect(db_name)
+        data = conn.cursor()
+        data.execute("SELECT * FROM TEAM")
+        print("Équipes :")
+        for row in cursor.fetchall():
+            print(f"ID de l'équipe : {row[0]}, Nom de l'équipe : {row[1]}, Directeur : {row[2]}, Position au classement constructeur : {row[3]}")
+        conn.close()
