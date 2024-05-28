@@ -553,11 +553,12 @@ def fn_input_driver():
     return car_list
 
 
-    def fn_dict_team(db_name):
-        conn = sqlite3.connect(db_name)
-        data = conn.cursor()
-        data.execute("SELECT * FROM TEAM")
-        print("Équipes :")
-        for row in cursor.fetchall():
-            print(f"ID de l'équipe : {row[0]}, Nom de l'équipe : {row[1]}, Directeur : {row[2]}, Position au classement constructeur : {row[3]}")
-        conn.close()
+def fn_dict_team(db_name):
+    conn = sqlite3.connect(db_name)
+    data = conn.cursor()
+    data.execute("SELECT * FROM TEAM")
+    print("Équipes :")
+    for row in data.fetchall():
+        print(f"ID de l'équipe : {row[0]}, Nom de l'équipe : {row[1]}, Directeur : {row[2]}, Position au classement constructeur : {row[3]}")
+    conn.close()
+    return data
