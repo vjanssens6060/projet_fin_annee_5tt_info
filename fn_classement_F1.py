@@ -150,13 +150,13 @@ def fn_init_db(db_name, sql_init_script):
             print("The SQLite connection is closed")
 
 def fn_input_team():
-    q_team_nom = "Encoder le nom de la team"
+    q_team_nom = "Encoder le nom de la team : "
     e_team_nom = "Erreur le nom de la team n'est pas valide"
     team_nom = fn_question_alpha(q_team_nom, e_team_nom)
-    q_directeur_nom = "Encoder le nom du directeur"
+    q_directeur_nom = "Encoder le nom du directeur : "
     e_directeur_nom = "Erreur le nom du directeur n'est pas valide"
     directeur_nom = fn_question_alpha(q_directeur_nom, e_directeur_nom)
-    q_position_classement_constructeur = "Entrer le position au classement constructeur de la team"
+    q_position_classement_constructeur = "Entrer le position au classement constructeur de la team : "
     e_position_classement_constructeur = "Erreur la position au classement constructeur n'est pas valide"
     position_classement_constructeur = fn_question_int(q_position_classement_constructeur, e_position_classement_constructeur)
     team_list = [team_nom, directeur_nom, position_classement_constructeur]
