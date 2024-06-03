@@ -554,11 +554,37 @@ def fn_input_driver():
 
 
 def fn_dict_team(db_name):
-    conn = sqlite3.connect(db_name)
-    data = conn.cursor()
-    data.execute("SELECT * FROM TEAM")
-    print("Équipes :")
-    for row in data.fetchall():
-        print(f"ID de l'équipe : {row[0]}, Nom de l'équipe : {row[1]}, Directeur : {row[2]}, Position au classement constructeur : {row[3]}")
-    conn.close()
-    return data
+    sqliteConnection = None
+    try:            
+        with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
+            print(f"Connected to the database {db_name}")
+            cursor = sqliteConnection.cursor()                                
+            try:
+                cursor.execute(f"SELECT * FROM TEAM;")
+                data = cursor.fetchall()
+                print("SQLite script executed successfully")
+                print(f'\nExecution du SELECT :')
+                for line in data:
+                    print(line)
+                print()
+                # Transformation des donnÃ©es d'une table SQL contenant (title, date, description_e) rÃ©cupÃ©rÃ©e Ã  l'aide de (SELECT * FROM TEAM;) en liste de dictionnaire
+                # RÃ©cupÃ©rez les noms des colonnes
+                column_names = [description[0] for description in cursor.description]
+                # Transformez les donnÃ©es en une liste de dictionnaires
+                team_list = []
+                for line in data:
+                    event = dict(zip(column_names, line))
+                    team_list.append(event)
+            except sqlite3.Error as error:
+                print(f"Error while executing SQLite script: {error}")
+            finally:
+                cursor.close()
+    except sqlite3.Error as error:
+        print(f"Error while connecting to SQLite: {error}")
+    except Exception as error:
+        print(f"{error}")
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("The SQLite connection is closed")
+            return team_list

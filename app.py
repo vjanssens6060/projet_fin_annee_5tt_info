@@ -23,14 +23,11 @@ def encode_team():
         session['nom'] = request.form['nom']
         session['directeur'] = request.form['directeur']
         session['position_classement_constructeur'] = request.form['position_classement_constructeur']        
-        new_id = None
 
-            db_name = fnht.fn_get_db_name()                   
-            writer = fnht_set_team_data(db_name, team_data)
-            line = [new_id, session['nom'], session['directeur'], session['position_classement_constructeur']]
-            writer.writerow(line)
+        db_name = fnht.fn_get_db_name()                   
+        fnht.set_team_data(db_name, team_data)
         
-        return redirect('/encode_team')
+        return redirect('/index')
 
 
 if __name__ == '__main__':
