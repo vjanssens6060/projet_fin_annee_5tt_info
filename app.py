@@ -14,5 +14,24 @@ def index():
     data = fnht.fn_dict_team(db_name)
     return render_template('index.html', data=data)
 
+@app.route("/encode_team", methods=['GET', 'POST'])
+def encode_team():
+    if request.method == 'GET':
+        return render_template('encode_team.html')
+
+    elif request.method == 'POST':
+        session['nom'] = request.form['nom']
+        session['directeur'] = request.form['directeur']
+        session['position_classement_constructeur'] = request.form['position_classement_constructeur']        
+        new_id = None
+
+            db_name = fnht.fn_get_db_name()                   
+            writer = fnht_set_team_data(db_name, team_data)
+            line = [new_id, session['nom'], session['directeur'], session['position_classement_constructeur']]
+            writer.writerow(line)
+        
+        return redirect('/encode_team')
+
+
 if __name__ == '__main__':
 	app.run(debug=True)
