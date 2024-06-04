@@ -588,3 +588,31 @@ def fn_dict_team(db_name):
             sqliteConnection.close()
             print("The SQLite connection is closed")
             return team_list
+        
+def fn_dict_team_one_row(db_name, id):
+    sqliteConnection = None
+    try:            
+        with sqlite3.connect(db_name, timeout=10) as sqliteConnection:
+            print(f"Connected to the database {db_name}")
+            cursor = sqliteConnection.cursor()                                
+            try:
+                cursor.execute(f"SELECT * FROM team WHERE team_id={id};")
+                data = cursor.fetchone()
+                print("SQLite script executed successfully")
+                print(f'\nExecution du SELECT :')
+                column_names = [description[0] for description in cursor.description]
+                # Transformez les donnÃ©es en une liste de dictionnaires
+                dict_team = dict(zip(column_names, data))
+            except sqlite3.Error as error:
+                print(f"Error while executing SQLite script: {error}")
+            finally:
+                cursor.close()
+    except sqlite3.Error as error:
+        print(f"Error while connecting to SQLite: {error}")
+    except Exception as error:
+        print(f"{error}")
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("The SQLite connection is closed")
+            return dict_team

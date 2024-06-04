@@ -11,32 +11,6 @@ def fn_get_db_name():
     db_name = f'{work_dir}/data.db'
     return db_name
 
-app = Flask(__name__)
-app.secret_key = b'bafe004cc8de79cc96482b95db2d75473a3aa855b3270350267ccc92bddd46c5'
-
-@app.route('/', methods=['GET'])
-@app.route("/index", methods=['GET'])
-def index():    
-    db_name = fnht.fn_get_db_name()
-    data = fnht.fn_dict_team(db_name)
-    return render_template('index.html', data=data)
-
-@app.route("/encode_team", methods=['GET', 'POST'])
-def encode_team():
-    if request.method == 'GET':
-        return render_template('encode_team.html')
-
-    elif request.method == 'POST':
-        session['nom'] = request.form['nom']
-        session['directeur'] = request.form['directeur']
-        session['position_classement_constructeur'] = request.form['position_classement_constructeur']        
-
-        db_name = fnht.fn_get_db_name() 
-        team_data = [session['nom'],session['directeur'],session['position_classement_constructeur']]
-        fnht.fn_set_team_data(db_name, team_data)
-        
-        return redirect('/index')
-
 def fn_read_db(db_name, table_name):
     sqliteConnection = None
     try:            
@@ -65,20 +39,43 @@ def fn_read_db(db_name, table_name):
             sqliteConnection.close()
             print("The SQLite connection is closed")
             return data
+        
+
+app = Flask(__name__)
+app.secret_key = b'bafe004cc8de79cc96482b95db2d75473a3aa855b3270350267ccc92bddd46c5'
+
+@app.route('/', methods=['GET'])
+@app.route("/index", methods=['GET'])
+def index():    
+    db_name = fnht.fn_get_db_name()
+    data = fnht.fn_dict_team(db_name)
+    return render_template('index.html', data=data)
+
+@app.route("/encode_team", methods=['GET', 'POST'])
+def encode_team():
+    if request.method == 'GET':
+        return render_template('encode_team.html')
+
+    elif request.method == 'POST':
+        session['nom'] = request.form['nom']
+        session['directeur'] = request.form['directeur']
+        session['position_classement_constructeur'] = request.form['position_classement_constructeur']        
+
+        db_name = fnht.fn_get_db_name() 
+        team_data = [session['nom'],session['directeur'],session['position_classement_constructeur']]
+        fnht.fn_set_team_data(db_name, team_data)
+        
+        return redirect('/index')
 
 @app.route("/edit_team/<id>", methods=['GET', 'POST'])
 def edit_team(id):
     if request.method == 'GET':
         line = []
         db_name = fn_get_db_name()
-        data = fn_read_db(db_name)
-
-        # Rechercher une ligne par son ID et modifier son contenu
-        for line in data:
-            if int(line['team_id']) == int(id):
-                nom = line['nom']
-                directeur =  line['directeur']
-                position_classement_constructeur = line['position_classement_constructeur']
+        data = fnht.fn_dict_team_one_row(db_name, id)
+        nom = data['nom']
+        directeur =  data['directeur']
+        position_classement_constructeur = data['position_classement_constructeur']
 
         return render_template('edit_team.html',
                                 nom = nom,
@@ -90,19 +87,11 @@ def edit_team(id):
         session['nom'] = request.form['nom']
         session['directeur'] = request.form['directeur']
         session['position_classement_constructeur'] = request.form['position_classement_constructeur']
-        data = []
-
-        # Rechercher une ligne par son ID et modifier son contenu
-        for line in data:
-            if line['team_id'] == id:
-                line['nom'] = session['nom']
-                line['directeur'] = session['directeur']
-                line['position_classement_constructeur'] = session['position_classement_constructeur']
 
         # Réécrire le fichier CSV avec les modifications
         db_name = fnht.fn_get_db_name() 
         team_data = [session['nom'],session['directeur'],session['position_classement_constructeur']]
-        fnht.fn_set_team_data(db_name, team_data)
+        fnht.fn_update_team(team_data, id, db_name)
         
         return redirect('/index')
 
